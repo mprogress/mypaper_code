@@ -17,14 +17,13 @@ import pandas as pd
 def convert_train_data(file_dir):
  
     root_dir = 'E:\\GTSRB_Final_Training_Images_jpg\\GTSRB\\Final_Training\\Images'
-    # 这是图片转换成jpg后另存为的根目录，在运行程序前需要自己先创建
+    # 图片转换成jpg后存目录，先创建
  
     directories = [file for file in os.listdir(file_dir)  if os.path.isdir(os.path.join(file_dir, file))]
     # print(directories)
     # directories是一个列表，其中每个元素都是file_dir目录下的文件名，部分展示如下所示：
-    # ['00000', '00001', '00002', '00003', '00004', '00005', '00006',
-    #  '00007', '00008', '00009', '00010', '00011','00012', '00013',
-    #  ...
+    # ['00000', '00001', '00002', '00003'
+
  
     for files in directories:
         path = os.path.join(root_dir,files)
@@ -34,16 +33,12 @@ def convert_train_data(file_dir):
         # 判断path路径是否存在，不存在就先创建路径，部分展示如下：
         # E:\DataSet\GTRSB\GTSRB_Final_Training_Images_roi_jpg\00000
         # E:\DataSet\GTRSB\GTSRB_Final_Training_Images_roi_jpg\00001
-        # E:\DataSet\GTRSB\GTSRB_Final_Training_Images_roi_jpg\00002
-        # E:\DataSet\GTRSB\GTSRB_Final_Training_Images_roi_jpg\00003
- 
+        
         data_dir = os.path.join(file_dir, files)
         # print(data_dir)，部分输出如下：
         # E:\DataSet\GTRSB\GTSRB_Final_Training_Images\GTSRB\Final_Training\Images\00000
         # E:\DataSet\GTRSB\GTSRB_Final_Training_Images\GTSRB\Final_Training\Images\00001
-        # E:\DataSet\GTRSB\GTSRB_Final_Training_Images\GTSRB\Final_Training\Images\00002
-        # E:\DataSet\GTRSB\GTSRB_Final_Training_Images\GTSRB\Final_Training\Images\00003
- 
+       
         file_names = [os.path.join(data_dir, f) for f in os.listdir(data_dir)  if f.endswith(".ppm")]
         # file_name里面每个元素都是以.ppm为后缀的文件的绝对地址
         for file_name in file_names :
