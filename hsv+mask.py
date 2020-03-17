@@ -9,7 +9,9 @@ import os
 # cv2.imshow('hsv',hsv)
 
 training_dir = 'E:\\paper-hsv\\training'
-file_names = [os.path.join(training_dir, f) for f in os.listdir(training_dir)  if f.endswith(".jpg")]
+mask_dir = 'E:\\paper-hsv\\mask' 
+file_names = [os.path.join(training_dir, f) for f in os.listdir(training_dir)  if f.endswith(".png")]
+
 ## file_name里面每个元素都是以.ppm为后缀的文件的绝对地址
 # for file_name in file_names:
 #     # print(file_name)
@@ -17,27 +19,24 @@ file_names = [os.path.join(training_dir, f) for f in os.listdir(training_dir)  i
 
 
 def hsv_yellow():
-    #橙黄色
+    ###############橙黄色
     for file_name in file_names:
         # print(file_name)
         img = cv2.imread('%s'%(file_name))
         # img = cv2.imread('E:\\paper-hsv\\training')
         hsv = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-
-        lower_hsv = np.array([11, 43, 46],dtype=np.uint8)
+        lower_hsv_yellow = np.array([11, 43, 46],dtype=np.uint8)
         #橙色HSV范围下限 原：11,43,46
 
-        upper_hsv = np.array([19, 255, 255],dtype=np.uint8) 
+        upper_hsv_yellow = np.array([19, 255, 255],dtype=np.uint8) 
         #橙色HSV范围上限 原：25,255,255
     
-        mask = cv2.inRange(hsv,lower_hsv,upper_hsv)
-
+        mask_yellow = cv2.inRange(hsv,lower_hsv_yellow,upper_hsv_yellow)
         # cv2.imshow('yellow',mask)
         # cv2.waitKey(0)
-
         ########优化处理mask区域###################
         #模糊
-        blurred = cv2.blur(mask,(9,9))
+        blurred = cv2.blur(mask_yellow,(9,9))
         # cv2.imshow('blurred',blurred)
         
         #二值化
@@ -50,8 +49,12 @@ def hsv_yellow():
         closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
         # cv2.imshow('closed',closed)
         # cv2.waitKey(0)
-        
-        cv2.imwrite('E:\\paper-hsv\\mask\\mask.png', closed)
+
+        (filepath, tempfilename) = os.path.split(file_name)
+        mask_name = tempfilename.split('.')[0]
+        # print(mask_name)
+       
+        cv2.imwrite('%s\\%s_mask.png'%(mask_dir,mask_name), closed)
 
         ##############如果场景比较复杂，仍然存在颜色干扰，可以采用膨胀和腐蚀操作进行去除干扰。##############
         #腐蚀和膨胀
@@ -64,8 +67,6 @@ def hsv_yellow():
         mask = cv2.dilate(erode,None,iterations=4)
         # cv2.imshow('dilate',dilate)
         # cv2.waitKey(0)
-
-
 
 
 
@@ -203,7 +204,7 @@ def cut_ROI(mask):
                 temp=mask[h2:h1,l2:l1]
                 i=i+1
                 #显示裁剪后的标志
-                cv2.imshow('sign'+str(i),temp)
+                # cv2.imshow('sign'+str(i),temp)
         #显示画了标志的原图       
         cv2.imshow('res',res)
 
@@ -211,8 +212,8 @@ def cut_ROI(mask):
 
 
 if __name__ == '__main__':
-    hsv_red()
-    mask_dir = 'E:\\paper-hsv\\mask' 
+    hsv_yellow()
+    
     for masks in os.listdir(mask_dir):
         # print(masks)  
         mask = cv2.imread(mask_dir + "/" + masks)
